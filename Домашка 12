@@ -1,0 +1,88 @@
+class Candidate {
+    String name;
+    boolean offerAccepted = false;
+
+    void confirmOffer() {
+        offerAccepted = true;
+        System.out.println(name + " podtverdil offer.");
+    }
+}
+
+class Manager {
+    void createVacancy() {
+        System.out.println("Rukovoditel sozdaet zayavku na vakansiyu.");
+    }
+
+    void receiveNotification(String message) {
+        System.out.println("Rukovoditel poluchil uvedomlenie: " + message);
+    }
+
+    boolean conductInterview() {
+        System.out.println("Rukovoditel provodit tekhnicheskoe sobesedovanie.");
+        return true;
+    }
+}
+
+class HR {
+    boolean checkVacancy() {
+        System.out.println("HR proveryaet zayavku.");
+        return true;
+    }
+
+    boolean checkApplication(String candidateName) {
+        System.out.println("HR proveryaet anketu kandidate: " + candidateName);
+        return true;
+    }
+
+    void conductInterview() {
+        System.out.println("HR provodit pervichnoe sobesedovanie.");
+    }
+}
+
+class IT {
+    void setupWorkplace(String employeeName) {
+        System.out.println("IT otdel nastroivaet rabochee mesto dlya: " + employeeName);
+    }
+}
+
+class SystemDB {
+    void addEmployee(String name) {
+        System.out.println("Sistema dobavlyaet sotrudnika v bazu: " + name);
+    }
+}
+
+public class HiringProcess {
+    public static void main(String[] args) {
+        Manager manager = new Manager();
+        HR hr = new HR();
+        Candidate candidate = new Candidate();
+        IT it = new IT();
+        SystemDB system = new SystemDB();
+
+        manager.createVacancy();
+        if (hr.checkVacancy()) {
+            System.out.println("Zayavka utverzhdena.");
+        } else {
+            manager.receiveNotification("Zayavka trebuet dorabotki");
+            return;
+        }
+
+        String candidateName = "Ivan Ivanov";
+        if (hr.checkApplication(candidateName)) {
+            hr.conductInterview();
+            boolean managerInterviewPassed = manager.conductInterview();
+            if (managerInterviewPassed) {
+                System.out.println("Offer predlozhen kandidat.");
+                candidate.confirmOffer();
+                system.addEmployee(candidateName);
+                it.setupWorkplace(candidateName);
+            } else {
+                System.out.println("Kandidat poluchil otkaz posle sobesedovaniya.");
+            }
+        } else {
+            System.out.println("Anketa otklonena.");
+        }
+
+        System.out.println("Protsess nayma zavershen.");
+    }
+}
