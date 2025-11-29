@@ -1,0 +1,102 @@
+class Client {
+    String name;
+
+    void requestAvailability(SystemSystem system) {
+        System.out.println(name + " zaprashivaet dostupnost ploshchadki.");
+        boolean available = system.checkAvailability();
+        if (available) {
+            System.out.println("Ploshchadka dostupna. Informatsiya o stoimosti predostavlena klientu.");
+        } else {
+            System.out.println("Ploshchadka nedostupna. Predlozhenie vybrat druguyu datu.");
+        }
+    }
+
+    boolean confirmBooking(SystemSystem system) {
+        System.out.println(name + " podtverzhdaet vybor ploshchadki.");
+        return system.processPayment();
+    }
+
+    void leaveFeedback(SystemSystem system) {
+        System.out.println(name + " ostavlyaet otzyv o servise.");
+        system.collectFeedback(name, "Otlichno!");
+    }
+}
+
+class SystemSystem {
+    PaymentGateway paymentGateway = new PaymentGateway();
+    Admin admin = new Admin();
+    Manager manager = new Manager();
+
+    boolean checkAvailability() {
+        return true;
+    }
+
+    boolean processPayment() {
+        System.out.println("Sistema otpravlyaet zapros na predoplatu.");
+        boolean success = paymentGateway.pay();
+        if (success) {
+            System.out.println("Platezh uspeshnyy. Podtverzhdenie bronirovaniya klientu i adminu.");
+            admin.notifyBooking();
+            return true;
+        } else {
+            System.out.println("Platezh otklonen. Klient uvedomlen.");
+            return false;
+        }
+    }
+
+    void sendTasksToContractors() {
+        System.out.println("Sistema otpravlyaet zadachi podryadchikam.");
+    }
+
+    void collectFeedback(String clientName, String feedback) {
+        System.out.println("Sistema sobiraet otzyv ot " + clientName + ": " + feedback);
+        manager.receiveReport(feedback);
+    }
+}
+
+class PaymentGateway {
+    boolean pay() {
+        System.out.println("Platezhnyy shlyuz obrabatyvaet oplatu...");
+        return true;
+    }
+}
+
+class Admin {
+    void notifyBooking() {
+        System.out.println("Administrator ploshchadki poluchil uvedomlenie o bronirovanii.");
+    }
+}
+
+class Contractor {
+    void completeTask() {
+        System.out.println("Podryadchik vypolnyaet zadachu i podtverzhdaet vypolnenie.");
+    }
+}
+
+class Manager {
+    void receiveReport(String feedback) {
+        System.out.println("Menedzher poluchaet otchet: " + feedback);
+    }
+}
+
+public class BookingProcess {
+    public static void main(String[] args) {
+        Client client = new Client();
+        client.name = "Klient 1";
+        SystemSystem system = new SystemSystem();
+
+        client.requestAvailability(system);
+
+        if (client.confirmBooking(system)) {
+            system.sendTasksToContractors();
+            Contractor contractor1 = new Contractor();
+            Contractor contractor2 = new Contractor();
+            contractor1.completeTask();
+            contractor2.completeTask();
+
+            client.leaveFeedback(system);
+        }
+
+        System.out.println("Protsess bronirovaniya zavershen.");
+    }
+}
