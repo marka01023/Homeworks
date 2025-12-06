@@ -1,0 +1,153 @@
+public class Main {
+
+    interface State {
+        void selectTicket();
+        void insertMoney();
+        void dispenseTicket();
+        void cancel();
+    }
+
+    static class TicketMachine {
+        State idle;
+        State waitingForMoney;
+        State moneyReceived;
+        State ticketDispensed;
+        State transactionCanceled;
+
+        State currentState;
+
+        public TicketMachine() {
+            idle = new IdleState(this);
+            waitingForMoney = new WaitingForMoneyState(this);
+            moneyReceived = new MoneyReceivedState(this);
+            ticketDispensed = new TicketDispensedState(this);
+            transactionCanceled = new TransactionCanceledState(this);
+            currentState = idle;
+        }
+
+        void setState(State state) {
+            currentState = state;
+        }
+
+        void selectTicket() {
+            currentState.selectTicket();
+        }
+
+        void insertMoney() {
+            currentState.insertMoney();
+        }
+
+        void dispenseTicket() {
+            currentState.dispenseTicket();
+        }
+
+        void cancel() {
+            currentState.cancel();
+        }
+    }
+
+    static class IdleState implements State {
+        TicketMachine machine;
+
+        public IdleState(TicketMachine machine) {
+            this.machine = machine;
+        }
+
+        public void selectTicket() {
+            machine.setState(machine.waitingForMoney);
+        }
+
+        public void insertMoney() {}
+
+        public void dispenseTicket() {}
+
+        public void cancel() {}
+    }
+
+    static class WaitingForMoneyState implements State {
+        TicketMachine machine;
+
+        public WaitingForMoneyState(TicketMachine machine) {
+            this.machine = machine;
+        }
+
+        public void selectTicket() {}
+
+        public void insertMoney() {
+            machine.setState(machine.moneyReceived);
+        }
+
+        public void dispenseTicket() {}
+
+        public void cancel() {
+            machine.setState(machine.transactionCanceled);
+        }
+    }
+
+    static class MoneyReceivedState implements State {
+        TicketMachine machine;
+
+        public MoneyReceivedState(TicketMachine machine) {
+            this.machine = machine;
+        }
+
+        public void selectTicket() {}
+
+        public void insertMoney() {}
+
+        public void dispenseTicket() {
+            machine.setState(machine.ticketDispensed);
+        }
+
+        public void cancel() {
+            machine.setState(machine.transactionCanceled);
+        }
+    }
+
+    static class TicketDispensedState implements State {
+        TicketMachine machine;
+
+        public TicketDispensedState(TicketMachine machine) {
+            this.machine = machine;
+        }
+
+        public void selectTicket() {}
+
+        public void insertMoney() {}
+
+        public void dispenseTicket() {
+            machine.setState(machine.idle);
+        }
+
+        public void cancel() {}
+    }
+
+    static class TransactionCanceledState implements State {
+        TicketMachine machine;
+
+        public TransactionCanceledState(TicketMachine machine) {
+            this.machine = machine;
+        }
+
+        public void selectTicket() {}
+
+        public void insertMoney() {}
+
+        public void dispenseTicket() {}
+
+        public void cancel() {
+            machine.setState(machine.idle);
+        }
+    }
+
+    public static void main(String[] args) {
+        TicketMachine machine = new TicketMachine();
+
+        machine.selectTicket();
+        machine.insertMoney();
+        machine.dispenseTicket();
+
+        machine.selectTicket();
+        machine.cancel();
+    }
+}
